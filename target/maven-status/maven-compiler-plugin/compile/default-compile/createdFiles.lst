@@ -1,0 +1,6 @@
+cn\itcast\common\junit\SpringJunitTest.class
+cn\itcast\core\bean\TestTb.class
+cn\itcast\core\dao\TestTbDao.class
+cn\itcast\core\service\TestTbServiceImpl.class
+cn\itcast\core\controller\CenterController.class
+cn\itcast\core\service\TestTbService.class

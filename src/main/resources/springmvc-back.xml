@@ -20,5 +20,10 @@
 		<property name="prefix" value="/WEB-INF/back_page/"/>
 		<property name="suffix" value=".jsp"/>
 	</bean>
-	
+	<!-- 配置全局日期转换 -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="webBindingInitializer">
+			<bean class="cn.itcast.core.web.MyCustomDateEditor"></bean>
+		</property>
+	</bean>
 </beans>

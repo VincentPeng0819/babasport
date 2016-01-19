@@ -22,8 +22,6 @@ public class TestTbServiceImpl implements TestTbService{
 	
 	public void addTestTb(TestTb testTb) {
 		testTbDao.addTestTb(testTb);
-		
-		throw new RuntimeException();
 	}
 
 }
