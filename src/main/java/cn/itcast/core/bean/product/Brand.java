@@ -1,5 +1,7 @@
 package cn.itcast.core.bean.product;
 
+import cn.itcast.core.web.Constants;
+
 public class Brand {
 	private Integer id;
 	private String name;
@@ -8,11 +10,32 @@ public class Brand {
 	private Integer sort;
 	private Integer isDisplay;
 	//pageNo
-	private Integer pageNo;
+	private Integer pageNo = 1;
+	private Integer startRow;
+	private Integer pageSize = 5;
+	
+	//获取全路径
+	public String getAllUrl(){
+		return Constants.IMAGE_URL + imgUrl;
+	}
+	public Integer getStartRow() {
+		return startRow;
+	}
+	public void setStartRow(Integer startRow) {
+		this.startRow = startRow;
+	}
+	public Integer getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(Integer pageSize) {
+		this.startRow = (pageNo - 1)*pageSize;
+		this.pageSize = pageSize;
+	}
 	public Integer getPageNo() {
 		return pageNo;
 	}
 	public void setPageNo(Integer pageNo) {
+		this.startRow = (pageNo - 1)*pageSize;
 		this.pageNo = pageNo;
 	}
 	public Integer getId() {
@@ -53,7 +76,7 @@ public class Brand {
 	}
 	@Override
 	public String toString() {
-		return "Brand [idInteger=" + id + ", name=" + name
+		return "Brand [id=" + id + ", name=" + name
 				+ ", description=" + description + ", imgUrl=" + imgUrl
 				+ ", sort=" + sort + ", isDisplay=" + isDisplay + "]";
 	}

@@ -61,4 +61,15 @@
 		<filter-name>encoding</filter-name>
 		<url-pattern>*.shtml</url-pattern>
 	</filter-mapping>
+	
+	<!-- 配置Jcaptcha 验证码-->
+	<servlet>
+		<servlet-name>jcaptcha</servlet-name>
+		<servlet-class>cn.itcast.common.captcha.JcaptchaServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>jcaptcha</servlet-name>
+		<url-pattern>/captcha.svl</url-pattern>
+	</servlet-mapping>
 </web-app>

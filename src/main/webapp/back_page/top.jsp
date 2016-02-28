@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<title>BABASPORT Administrator's Control Panel - powered by babasport</title>
+<title>openstack Administrator's Control Panel - powered by openstack</title>
 <link href="/res/itcast/css/admin.css" rel="stylesheet" type="text/css"/>
 <link href="/res/common/css/theme.css" rel="stylesheet" type="text/css"/>
 <link href="/res/common/css/jquery.validate.css" rel="stylesheet" type="text/css"/>

@@ -5,23 +5,46 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>babasport-list</title>
+<script type="text/javascript" >
+function checkBox(name,checked){
+	$("input[name=" + name +"]").attr("checked",checked);
+}
+
+function optDelete(name,isDisplay){
+	var len = $("input[name=ids]:checked").size();
+	if(len <=0 ){
+		alert("请至少选择一项");
+		return;
+	}
+	if(!confirm("是否确定删除")){
+		return;
+	}
+	$("#jvForm").attr("action","/brand/deletes.do?name=" + name + "&isDisplay=" + isDisplay);
+	$("#jvForm").attr("method","post").submit();
+}
+
+</script>
 </head>
 <body>
 	<div class="box-positon">
 		<div class="rpos">当前位置: 品牌管理 - 列表</div>
 		<form class="ropt">
 			<input class="add" type="button" value="添加"
-				onclick="javascript:window.location.href='add.jsp'" />
+				onclick="javascript:window.location.href='toAdd.do'" />
 		</form>
 		<div class="clear"></div>
 	</div>
 	<div class="body-box">
-		<form action="v_list.shtml" method="post" style="padding-top: 5px;">
-			品牌名称: <input type="text" name="name" /> <select>
-				<option value="1">是</option>
-				<option>不是</option>
+		<form action="/brand/list.do" method="post" style="padding-top: 5px;">
+			品牌名称: <input type="text" name="name" value="${name }" /> 
+			<select	name="isDisplay">
+				<option value="1"
+					<c:if test="${isDisplay ==1}" >selected="selected"</c:if>>是</option>
+				<option value="0"
+					<c:if test="${isDisplay ==0}" >selected="selected" </c:if>>不是</option>
 			</select> <input type="submit" class="query" value="查询" />
 		</form>
+<form id="jvForm">
 		<table cellspacing="1" cellpadding="0" border="0" width="100%"
 			class="pn-ltable">
 			<thead class="pn-lthead">
@@ -45,22 +68,34 @@
 						<td align="center">${entry.id}</td>
 						<td align="center">${entry.name}</td>
 						<td align="center"><img width="40" height="40"
-							src="/res/img/pic/ppp0.jpg" /></td>
+							src="${entry.allUrl }" /></td>
 						<td align="center">${entry.description}</td>
 						<td align="center">${entry.sort}</td>
-						<td align="center"><c:if test="${entry.isDisplay==1 }">是</c:if><c:if test="${entry.isDisplay==0 }">否</c:if></td>
-						<td align="center"><a class="pn-opt" href="#">修改</a> | <a
-							class="pn-opt" onclick="if(!confirm('您确定删除吗？')) {return false;}"
-							href="#">删除</a></td>
+						<td align="center">
+							<c:if test="${entry.isDisplay==1 }">是</c:if>
+							<c:if test="${entry.isDisplay==0 }">否</c:if>
+						</td> 
+						<td align="center">
+						<a class="pn-opt" href="toEdit.do?name=${name}&id=${entry.id}&isDisplay=${entry.isDisplay}">修改</a> | 
+						<a class="pn-opt" onclick="if(!confirm('您确定删除吗？')) {return false;}" href="delete.do?name=${name}&id=${entry.id}&isDisplay=${entry.isDisplay}">删除</a>
+						</td>
 					</tr>
 
 				</c:forEach>
 
 			</tbody>
 		</table>
+</form>
+		<div class="page pb15">
+			<span class="r inb_a page_b"> 
+				<c:forEach items="${pagination.pageView  }" var="page">
+					${page }
+				</c:forEach>
+			</span>
+		</div>
 		<div style="margin-top: 15px;">
 			<input class="del-button" type="button" value="删除"
-				onclick="optDelete();" />
+				onclick="optDelete('${name}','${isDisplay }');" />
 		</div>
 	</div>
 </body>

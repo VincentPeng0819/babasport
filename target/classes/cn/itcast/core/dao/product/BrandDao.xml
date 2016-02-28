@@ -10,7 +10,7 @@
 		<result column="sort" property="sort" />
 		<result column="is_display" property="isDisplay" />
 	</resultMap>
-	<!-- 查询品牌 get* -->
+	<!-- 查询品牌 带分页get* -->
 	<select id="getBrandListWithPage" parameterType="Brand"
 		resultMap="brand">
 		SELECT id,name,description,img_url,sort,is_display FROM
@@ -24,9 +24,50 @@
 			</if>
 		</where>
 		order by id desc
-		limit 0,5
+		limit #{startRow},#{pageSize}
 	</select>
 
+	<sql id="brandSelect">
+		SELECT 
+		<if test="fields != null">
+			${fields}
+		</if>
+		<if test="fields == null">
+			id,name,description,img_url,sort,is_display
+		</if>
+			FROM babasport.bbs_brand
+	</sql>
+	
+	<sql id="brandOrder">
+		order by 
+		<if test="orderFields != null">
+			${orderFields.field} ${orderFields.order}
+		</if>
+		<if test="orderFields == null">
+			id desc
+		</if>
+	</sql>
+	
+	<sql id="brandNameLike">
+		<where>
+			<if test="name != null">
+				<if test="nameLike == true">
+					name like "%"#{name}"%"
+				</if>
+				<if test="nameLike == false">
+					name = #{name}
+				</if>
+			</if>
+		</where>
+	</sql>
+	<!-- 查询品牌 集合不带分页get* -->
+	<select id="getBrandList" parameterType="BrandQuery"
+		resultMap="brand">
+		<include refid="brandSelect"></include>
+		<include refid="brandNameLike"></include>
+		<include refid="brandOrder"></include>
+	</select>
+	
 	<!-- 查询总记录数 -->
 	<select id="getBrandTotalCount" parameterType="Brand"
 		resultType="Integer">
@@ -39,6 +80,78 @@
 			<if test="name !=null">
 				and	name = #{name}
 			</if>
+		</where>
+	</select>
+	
+	<!-- //添加品牌 -->
+	<insert id="addBrand" parameterType="Brand">
+		insert into bbs_brand
+		<trim prefix="(" suffix=")">
+			name,
+			description,
+			img_url,
+			sort,
+			is_display
+		</trim>
+		values
+		<trim prefix="(" suffix=")">
+			#{name},
+			#{description},
+			#{imgUrl},
+			#{sort},
+			#{isDisplay}
+		</trim>
+	</insert>
+	
+	<!-- 删除单个品牌 -->
+	<delete id="deleteBrandByKey" parameterType="Integer">
+		delete from bbs_brand 
+		<where>
+		id=#{id}
+		</where>
+	</delete>
+	
+	<!-- 删除多个品牌 -->
+	<delete id="deleteBrandByKeys" parameterType="Integer">
+		delete from bbs_brand 
+		<where>
+			id in
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			${id}
+		</foreach>
+		</where>
+	</delete>
+	
+	<!-- 修改品牌内容 -->
+	<update id="updateBrandByKey" parameterType="Brand">
+		update bbs_brand 
+		<set>
+			<if test="name != null">
+				name=#{name},
+			</if>
+			<if test="description != null">
+				description=#{description},
+			</if>
+			<if test="imgUrl != null">
+				img_url=#{imgUrl},
+			</if><if test="sort != null">
+				sort=#{sort},
+			</if>
+			<if test="isDisplay != null">
+				is_display=#{isDisplay}
+			</if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</update>
+	
+	<!-- 通过id获取单个品牌  -->
+	<select id="getBrandByKey" parameterType="Integer" resultMap="brand">
+		SELECT id,name,description,img_url,sort,is_display FROM
+			babasport.bbs_brand
+		<where>
+			id=#{id}
 		</where>
 	</select>
 </mapper>

@@ -21,4 +21,14 @@
 		<property name="suffix" value=".jsp"/>
 	</bean>
 	
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+		<property name="interceptors">
+			<bean class="cn.itcast.core.web.SpringmvcInterceptor">
+				<property name="adminId" value="1"></property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"></bean>
+	
 </beans>

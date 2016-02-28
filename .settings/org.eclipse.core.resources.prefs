@@ -1,5 +1,10 @@
 eclipse.preferences.version=1
+encoding//src/main/java/cn/itcast/core/bean/product=UTF-8
+encoding//src/main/java/cn/itcast/core/bean/product/Product.java=UTF-8
 encoding//src/main/webapp=UTF-8
+encoding//src/main/webapp/WEB-INF/front_page=UTF-8
+encoding//src/main/webapp/WEB-INF/front_page/product/product.jsp=UTF-8
+encoding//src/main/webapp/WEB-INF/ftl=UTF-8
 encoding//src/main/webapp/index.jsp=UTF-8
 encoding/<project>=UTF-8
 encoding/src=UTF-8

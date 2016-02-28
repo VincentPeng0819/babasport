@@ -42,13 +42,105 @@
 </style>
 </head>
 <script type="text/javascript">
+$(function(){
+	$("#colors a:first").trigger("click");
+});
+var color_Id;
+var buyLimit;
+var skuId;
+//选择颜色操作
+function colorToRed(target,colorId){
+	color_Id = colorId;
+	$("#colors a").each(function(){
+		$(this).attr("class","changToWhite");
+	});
+	$(target).attr("class","changToRed");
+	
+	//点击颜色变红之后清理尺码
+	$("#sizes a").each(function(){
+		$(this).attr("class","not-allow");
+	});
+	var flag = 0;
+	//将颜色有并且库存存在的显示出来（显示尺码）
+	<c:forEach items="${skus}" var="sku">
+		if(colorId == '${sku.colorId}'){
+			if(flag == 0){
+				//显示售价 库存 运费 限购
+				$("#price").html('${sku.skuPrice}');
+				$("#mprice").html('${sku.marketPrice}');
+				$("#fee").html('${sku.deliveFee}');
+				$("#stock").html('${sku.stockInventory}');
+				$("#" + '${sku.size}').attr("class","changToRed");
+				buyLimit = '${sku.skuUpperLimit}';
+				skuId = '${sku.id}';
+				flag = 1;
+			}else{
+				//显示售价 库存 运费 限购
+				$("#price").html('${sku.skuPrice}');
+				$("#mprice").html('${sku.marketPrice}');
+				$("#fee").html('${sku.deliveFee}');
+				$("#stock").html('${sku.stockInventory}');
+				$("#" + '${sku.size}').attr("class","changToWhite");
+				buyLimit = '${sku.skuUpperLimit}';
+				skuId = '${sku.id}';
+			}
+		}
+	</c:forEach>
+	$("#num").val(1);
+}
+//选择尺码响应的操作
+function sizeToRed(target,size){
+	if($(target).attr("class") != "not-allow"){
+	//先清理其他选中的尺码
+	$("#sizes a").each(function(){
+		var red = $(this).attr("class");
+		if(red == "changToRed"){
+			$(this).attr("class","changToWhite");	
+		}else if(red == "changToWhite"){
+			$(this).attr("class","changToWhite");
+		}else
+			$(this).attr("class","not-allow");
+	});
+	//将选中的尺码变红
+		$(target).attr("class","changToRed");
+		$("#num").val(1);
+		<c:forEach items="${skus}" var="sku">
+		if(color_Id == '${sku.colorId}' && size == '${sku.size}'){
+			//显示售价 库存 运费 限购
+			$("#price").html('${sku.skuPrice}');
+			$("#mprice").html('${sku.marketPrice}');
+			$("#fee").html('${sku.deliveFee}');
+			$("#stock").html('${sku.stockInventory}');
+			buyLimit = '${sku.skuUpperLimit}';
+			skuId = '${sku.id}';
+		}
+		</c:forEach>
+	}
+}
+function sub(){
+	var num = $("#num").val();
+	if(num == 1){
+		return;
+	}else{
+		$("#num").val(--num);
+	}
+}
+
+function add(){
+	var num = $("#num").val();
+	if(num == buyLimit){
+		alert("此商品限购" + buyLimit + "件");
+	}else{
+		$("#num").val(++num);
+	}
+}
 //加入购物车
 function addCart(){
 	alert("添加购物车成功!");
 }
 //立即购买
-function buy(){
-	window.location.href='cart.jsp';
+function buy(productId){
+	window.location.href='/shopping/buyCart.shtml?skuId=' + skuId + "&amount=" + $("#num").val() + "&buyLimit=" + buyLimit + "&productId=" + productId;
 }
 </script>
 </head>
@@ -142,35 +234,35 @@ function buy(){
 <div class="w ofc mt">
 	<div class="l">
 		<div class="showPro">
-			<div class="big"><a id="showImg" class="cloud-zoom" href="/res/img/pic/ppp0.jpg" rel="adjustX:10,adjustY:-1"><img alt="" src="/res/img/pic/ppp0.jpg"></a></div>
+			<div class="big"><a id="showImg" class="cloud-zoom" href="${product.img.allUrl }" rel="adjustX:10,adjustY:-1"><img alt="${product.name}" src="${product.img.allUrl }"></a></div>
 		</div>
 	</div>
 	<div class="r" style="width: 640px">
 		<ul class="uls form">
-			<li><h2>依琦莲2014瑜伽服套装新款 瑜珈健身服三件套 广场舞蹈服装 性价比最高的瑜伽服 三件套 送胸垫 支持货到付款</h2></li>
-			<li><label>巴  巴 价：</label><span class="word"><b class="f14 red mr">￥128.00</b>(市场价:<del>￥150.00</del>)</span></li>
+			<li><h2>${product.name}</h2></li>
+			<li><label>巴  巴 价：</label><span class="word"><b class="f14 red mr" id="price">￥ 128</b>(市场价:<del id="mprice">￥150.00</del>)</span></li>
 			<li><label>商品评价：</label><span class="word"><span class="val_no val3d4" title="4分">4分</span><var class="blue">(已有888人评价)</var></span></li>
-			<li><label>运　　费：</label><span class="word">10元</span></li>
-			<li><label>库　　存：</label><span class="word" id="stockInventory">100</span><span class="word" >件</span></li>
+			<li><label>运　　费：</label><span class="word" id="fee">10元</span></li>
+			<li><label>库　　存：</label><span class="word" id="stock">100</span><span class="word" >件</span></li>
 			<li><label>选择颜色：</label>
 				<div id="colors" class="pre spec">
-					<a onclick="colorToRed(this,9)" href="javascript:void(0)" title="西瓜红" class="changToRed"><img width="25" height="25" data-img="1" src="/res/img/pic/ppp00.jpg" alt="西瓜红 "><i>西瓜红</i></a>
-					<a onclick="colorToRed(this,11)" href="javascript:void(0)" title="墨绿" class="changToWhite"><img width="25" height="25" data-img="1" src="/res/img/pic/ppp00.jpg" alt="墨绿 "><i>墨绿</i></a>
-					<a onclick="colorToRed(this,18)" href="javascript:void(0)" title="浅粉" class="changToWhite"><img width="25" height="25" data-img="1" src="/res/img/pic/ppp00.jpg" alt="浅粉 "><i>浅粉</i></a>
+				<c:forEach items="${colors }" var="color">
+					<a onclick="colorToRed(this,'${color.id}')" href="javascript:void(0)" title="${color.name }" class="changToWhite"><img width="25" height="25" data-img="1" src="${product.img.allUrl }" alt="西瓜红 "><i>${color.name }</i></a>
+				</c:forEach>
 				</div>
 			</li>
 			<li id="sizes"><label>尺　　码：</label>
-						<a href="javascript:void(0)" class="not-allow"  id="S">S</a>
-						<a href="javascript:void(0)" class="not-allow"  id="M">M</a>
-						<a href="javascript:void(0)" class="not-allow"  id="L">L</a>
-						<a href="javascript:void(0)" class="not-allow"  id="XL">XL</a>
-						<a href="javascript:void(0)" class="not-allow"  id="XXL">XXL</a>
+						<a href="javascript:void(0)" class="not-allow"  id="S" onclick="sizeToRed(this,'S')">S</a>
+						<a href="javascript:void(0)" class="not-allow"  id="M" onclick="sizeToRed(this,'M')">M</a>
+						<a href="javascript:void(0)" class="not-allow"  id="L" onclick="sizeToRed(this,'L')">L</a>
+						<a href="javascript:void(0)" class="not-allow"  id="XL" onclick="sizeToRed(this,'XL')">XL</a>
+						<a href="javascript:void(0)" class="not-allow"  id="XXL" onclick="sizeToRed(this,'XXL')">XXL</a>
 			</li>
 			<li><label>我 要 买：</label>
-				<a id="sub" class="inb arr" style="border: 1px solid #919191;width: 10px;height: 10px;line-height: 10px;text-align: center;" title="减" href="javascript:void(0);" >-</a>
+				<a id="sub" class="inb arr" style="border: 1px solid #919191;width: 10px;height: 10px;line-height: 10px;text-align: center;" title="减" href="javascript:void(0);" onclick="sub()">-</a>
 				<input id="num" type="text" value="1" name="" size="1" readonly="readonly">
-				<a id="add" class="inb arr" style="border: 1px solid #919191;width: 10px;height: 10px;line-height: 10px;text-align: center;" title="加" href="javascript:void(0);">+</a></li>
-			<li class="submit"><input type="button" value="" class="hand btn138x40" onclick="buy();"/><input type="button" value="" class="hand btn138x40b" onclick="addCart()"/></li>
+				<a id="add" class="inb arr" style="border: 1px solid #919191;width: 10px;height: 10px;line-height: 10px;text-align: center;" title="加" href="javascript:void(0);" onclick="add()">+</a></li>
+			<li class="submit"><input type="button" value="" class="hand btn138x40" onclick="buy('${product.id}');"/><input type="button" value="" class="hand btn138x40b" onclick="addCart()"/></li>
 		</ul>
 	</div>
 </div>

@@ -9,6 +9,35 @@
 <link rel="stylesheet" href="/res/css/style.css" />
 <script src="/res/js/jquery.js"></script>
 <script src="/res/js/com.js"></script>
+<script type="text/javascript">
+function changeProvince(code){
+	var url = "/buyer/city.shtml";
+	var params = {'code':code};
+	$.post(url,params,function(data){
+		var cities = data.cities;
+		var html = '<option value="" selected>城市</option>';
+		
+		for(var i = 0; i < cities.length ; i++){
+			html += '<option value="' + cities[i].code + '">' + cities[i].name + '</option>';
+		}
+		$("#city").html(html);
+	},'json');
+}
+
+function changeCity(code){
+	var url = "/buyer/strict.shtml";
+	var params = {'code':code};
+	$.post(url,params,function(data){
+		var towns = data.towns;
+		var html = '<option value="" selected>县/区</option>';
+		
+		for(var i = 0; i < towns.length ; i++){
+			html += '<option value="' + towns[i].code + '">' + towns[i].name + '</option>';
+		}
+		$("#town").html(html);
+	},'json');
+}
+</script>
 </head>
 <body>
 <div class="bar"><div class="bar_w">
@@ -106,8 +135,8 @@
 		<h2 class="h2 h2_l mt"><em title="账户管理">账户管理</em><cite>&nbsp;</cite></h2>
 		<div class="box bg_gray">
 			<ul class="ul left_nav">
-			<li><a href="../buyer/profile.jsp" title="个人资料">个人资料</a></li>
-			<li><a href="../buyer/deliver_address.jsp" title="收货地址">收货地址</a></li>
+			<li><a href="/buyer/profile.shtml" title="个人资料">个人资料</a></li>
+			<li><a href="/buyer/deliver_address.shtml" title="收货地址">收货地址</a></li>
 			<li><a href="../buyer/change_password.jsp" title="修改密码">修改密码</a></li>
 			</ul>
 		</div>
@@ -125,11 +154,11 @@
 					<li id="errorName" class="errorTip" style="display:none">${error}</li>
 					<li>
 						<label for="username">用 户 名：</label>
-						<span class="word">fbb2016</span>
+						<span class="word">${buyer.username }</span>
 					</li>
 					<li>
 						<label for="username">邮　　箱：</label>
-						<span class="word">fbb2014@qq.com</span>
+						<span class="word">${buyer.email }</span>
 					</li>
 					<li>
 						<label for="realName">真实姓名：</label>
@@ -138,27 +167,37 @@
 					</li>
 					<li>
 						<label for="gender">性　　别：</label>
-						<span class="word"><input type="radio" name="gender" checked="checked"/>保密<input type="radio" name="gender" />男<input type="radio" name="gender" />女</span>
+						<span class="word"><input type="radio" name="gender" <c:if test="${buyer.gender == 'SECRECY' }" >checked="checked"</c:if>/>保密
+						<input type="radio" name="gender" <c:if test="${buyer.gender == 'MAN' }" >checked="checked"</c:if>/>男
+						<input type="radio" name="gender" <c:if test="${buyer.gender == 'WOMAN' }" >checked="checked"</c:if>/>女</span>
 					</li>
 					<li>
 						<label for="residence">居 住 地：</label>
 						<span class="word">
 							<select name="province"  id="province" onchange="changeProvince(this.value)">
 								<option value="" selected>省/直辖市</option>
-								<option value=""></option>
+								<c:forEach items="${ provinces}" var="province">
+								
+								<option value="${province.code }" <c:if test="${buyer.province == province.code }" >selected="selected"</c:if>>${province.name }</option>
+								
+								</c:forEach>
 							</select>
-							<select name="" id="city">
+							<select name="" id="city" onchange="changeCity(this.value)">
 								<option value="" selected>城市</option>
-								<option value=""></option>
+								<c:forEach items="${ cities}" var="city">
+								<option value="${city.code }" <c:if test="${buyer.city == city.code }" >selected="selected"</c:if>>${city.name }</option>
+								</c:forEach>
 							</select>
-							<select name="">
+							<select name="" id="town">
 								<option value="" selected>县/区</option>
-								<option value=""></option>
+								<c:forEach items="${ towns}" var="town">
+								<option value="${town.code }" <c:if test="${buyer.town == town.code }" >selected="selected"</c:if>>${town.name }</option>
+								</c:forEach>
 							</select>
 						</span>
 					</li>
 					<li><label for="address">详细地址：</label>
-						<span class="bg_text"><input type="text" id="address" name="address" maxLength="32" value="北京海滨区XXXXXXX"/></span>
+						<span class="bg_text"><input type="text" id="address" name="address" maxLength="32" value="${buyer.addr }"/></span>
 						<span class="pos"><span class="tip errorTip">用户名为4-20位字母、数字或中文组成，字母区分大小写。</span></span>
 					</li>
 					<li><label for="">&nbsp;</label><input type="submit" value="保存" class="hand btn66x23" /></li>
